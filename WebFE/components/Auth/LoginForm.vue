@@ -1,0 +1,46 @@
+<template>
+    <form class="form" @submit.prevent="handleLogin">
+      <div v-if="error" class="error">{{ error }}</div>
+      <div v-if="successMessage" class="success">{{ successMessage }}</div>
+      <div class="form-group">
+        <input v-model="email" class="form-control" type="text" placeholder="Email đăng nhập" required data-validation-required-message="Nhập email của bạn.">
+      </div>
+      <div class="form-group">
+        <input v-model="password" class="form-control" type="password" placeholder="Mật khẩu" required data-validation-required-message="Nhập mật khẩu của bạn.">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-round btn-b" :disabled="isLoading">
+        {{ isLoading ? 'Đang xử lý...' : 'Đăng nhập' }}
+        </button>
+      </div>
+    </form>
+  </template>
+  
+  <script setup>
+  import { ref } from 'vue'
+  import { useLogin } from '~/composables/useAuth'
+  
+  const email = ref('')
+  const password = ref('')
+  
+  const { login, error, isLoading, successMessage } = useLogin()
+  
+  const handleLogin = async () => {
+    await login(email.value, password.value)
+    if (successMessage.value) {
+      email.value = ''
+      password.value = ''
+    }
+  }
+  </script>
+  
+  <style scoped>
+  .error {
+    color: red;
+    margin-bottom: 10px;
+  }
+  .success {
+    color: green;
+    margin-bottom: 10px;
+  }
+  </style>
